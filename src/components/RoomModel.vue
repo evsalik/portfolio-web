@@ -1,8 +1,8 @@
 <template>
-  <div class="three-container" ref="threeContainer" @click="onContainerClick">
-    <div v-if="loading" class="loading-container">
-      <div class="loading-bar" :style="{ width: `${loadingProgress}%` }"></div>
-      <div class="loading-text">Loading... {{ Math.round(loadingProgress) }}%</div>
+  <div class="h-full w-full relative cursor-pointer" ref="threeContainer" @click="onContainerClick">
+    <div v-if="loading" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 bg-black p-2 rounded text-center">
+      <div class="h-5 bg-white transition-all" :style="{ width: `${Math.round(loadingProgress)}%` }"></div>
+      <div class="mt-2 text-xl text-white font-mono">Loading... {{ Math.round(loadingProgress) }}%</div>
     </div>
   </div>
 </template>
@@ -51,10 +51,9 @@ export default defineComponent({
           '/models/charite_room.glb',
           (gltf) => {
             scene.add(gltf.scene);
-            loading.value = false; // Model loaded, hide the loading spinner
+            loading.value = false;
           },
           (xhr) => {
-            // Update progress
             if (xhr.total) {
               loadingProgress.value = (xhr.loaded / xhr.total) * 100;
             }
@@ -74,7 +73,6 @@ export default defineComponent({
         const animate = () => {
           requestAnimationFrame(animate);
 
-          // Smoothly interpolate FOV towards target FOV
           if (camera.value) {
             camera.value.fov += (targetFov.value - camera.value.fov) * zoomEase;
             camera.value.updateProjectionMatrix();
@@ -107,43 +105,12 @@ export default defineComponent({
 });
 </script>
 
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+</style>
+
 <style>
 body, html {
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  background-color: black; /* Set background color to black */
-}
-
-.three-container {
-  width: 100%;
-  height: 100vh;
-  cursor: pointer;
-  position: relative;
-}
-
-.loading-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  background-color: black; /* Set background color to black */
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
-}
-
-.loading-bar {
-  height: 20px;
-  background-color: white; /* Set loading bar color to white */
-  width: 0;
-  transition: width 0.3s ease;
-}
-
-.loading-text {
-  margin-top: 10px;
-  font-size: 1.2em;
-  color: white; /* Set loading text color to white */
+  @apply overflow-hidden m-0 p-0 h-full bg-black;
 }
 </style>
